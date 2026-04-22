@@ -48,7 +48,10 @@
             <label>Cake Quantity:</label>
             <input type="number" name="cake_quantity" id="cakeQty" min="0" value="0">
 
+            <br><br>
+
             <!-- BROWNIE -->
+
             <label>Select Brownie:</label>
             <select name="brownie" id="brownieSelect">
                 <option value="">-- None --</option>
@@ -60,7 +63,11 @@
             <label>Brownie Quantity:</label>
             <input type="number" name="brownie_quantity" id="brownieQty" min="0" value="0">
 
+
+            <br>
+
             <!-- PAYMENT -->
+            <div class="form-group">
             <label>Payment Method:</label><br>
 
             <label>
@@ -72,6 +79,7 @@
                 <input type="radio" name="payment" value="COD">
                 Cash on Delivery
             </label>
+            </div>
 
             <!-- TOTAL -->
             <h3>Total Price: ₹<span id="totalPrice">0</span></h3>
@@ -139,8 +147,6 @@
             document.getElementById("successPopup").style.display = "none";
         }
 
-        /* ================= PRICE DATA ================= */
-
         const cakePrices = {
             "CheeseCake": 750,
             "ChocolateCake": 680,
@@ -154,8 +160,6 @@
             "Fudge Walnut Brownies": 130,
             "Nutella Brownies": 130
         };
-
-        /* ================= TOTAL CALCULATION ================= */
 
         function calculateTotal() {
 
