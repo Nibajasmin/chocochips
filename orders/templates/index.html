@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chocochips</title>
+    <link rel="stylesheet" href="{% static 'css/chocochips.css' %}">
+</head>
+
+<body>
+
+    <h1 id="heading">CHOCOCHIPS</h1>
+    <p id="para">Bites of happiness...</p>
+
+    <!-- Navigation -->
+    <ul>
+        <li><a class="active" href="#">Home</a></li>
+        <li><a href="#cakes">Cakes</a></li>
+        <li><a href="#brownies">Brownies</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <div>
+
+        <!-- FORM -->
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>Name:</label>
+            <input type="text" name="name" required>
+
+            <label>Address:</label>
+            <input type="text" name="address" required>
+
+            <label>Phone Number:</label>
+            <input type="tel" name="phone" required>
+
+            <!-- CAKE -->
+            <label>Select Cake:</label>
+            <select name="cake" id="cakeSelect">
+                <option value="">-- None --</option>
+                <option value="CheeseCake">CheeseCake</option>
+                <option value="ChocolateCake">ChocolateCake</option>
+                <option value="StrawberryCake">StrawberryCake</option>
+                <option value="HoneyCake">HoneyCake</option>
+                <option value="NutellaCake">NutellaCake</option>
+            </select>
+
+            <label>Cake Quantity:</label>
+            <input type="number" name="cake_quantity" id="cakeQty" min="0" value="0">
+
+            <!-- BROWNIE -->
+            <label>Select Brownie:</label>
+            <select name="brownie" id="brownieSelect">
+                <option value="">-- None --</option>
+                <option value="Chocolate Brownies">Chocolate Brownies</option>
+                <option value="Fudge Walnut Brownies">Fudge Walnut Brownies</option>
+                <option value="Nutella Brownies">Nutella Brownies</option>
+            </select>
+
+            <label>Brownie Quantity:</label>
+            <input type="number" name="brownie_quantity" id="brownieQty" min="0" value="0">
+
+            <!-- PAYMENT -->
+            <label>Payment Method:</label><br>
+
+            <label>
+                <input type="radio" name="payment" value="Gpay" onclick="handleGpay()" required>
+                Gpay
+            </label>
+
+            <label>
+                <input type="radio" name="payment" value="COD">
+                Cash on Delivery
+            </label>
+
+            <!-- TOTAL -->
+            <h3>Total Price: ₹<span id="totalPrice">0</span></h3>
+
+            <button type="submit">Order Now</button>
+        </form>
+
+        <!-- MENU -->
+        <h2 id="cakes">Cakes</h2>
+        <p>CheeseCake - 750</p>
+        <p>ChocolateCake - 680</p>
+        <p>StrawberryCake - 700</p>
+        <p>HoneyCake - 700</p>
+        <p>NutellaCake - 750</p>
+
+        <h2 id="brownies">Brownies</h2>
+        <p>Chocolate Brownies - 110</p>
+        <p>Fudge Walnut Brownies - 130</p>
+        <p>Nutella Brownies - 130</p>
+
+        <!-- IMAGES -->
+        <div class="image-row">
+            <img src="{% static 'images/cake1.png' %}">
+            <img src="{% static 'images/cake2.png' %}">
+            <img src="{% static 'images/cake3.png' %}">
+            <img src="{% static 'images/brownies1.png' %}">
+        </div>
+
+        <!-- INSTAGRAM -->
+        <p id="contact">Instagram id :</p>
+        <a href="https://www.instagram.com/Chocochips__" target="_blank">
+            @Chocochips__
+        </a>
+
+    </div>
+
+    <!-- SUCCESS POPUP -->
+    {% if success %}
+    <div id="successPopup" class="popup">
+        <div class="popup-content">
+            <h2>🎉 Order Confirmed!</h2>
+            <p>Your order has been placed successfully.</p>
+            <button onclick="closePopup()">OK</button>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- SCRIPTS -->
+    <script>
+        function isMobile() {
+            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
+
+        function handleGpay() {
+            let upiId = "chocochips@upi";
+
+            if (isMobile()) {
+                window.location.href = `upi://pay?pa=${upiId}&pn=Chocochips&am=100&cu=INR`;
+            } else {
+                alert("💻 GPay works only on mobile.\nUse phone to pay.\nUPI ID: " + upiId);
+            }
+        }
+
+        function closePopup() {
+            document.getElementById("successPopup").style.display = "none";
+        }
+
+        /* ================= PRICE DATA ================= */
+
+        const cakePrices = {
+            "CheeseCake": 750,
+            "ChocolateCake": 680,
+            "StrawberryCake": 700,
+            "HoneyCake": 700,
+            "NutellaCake": 750
+        };
+
+        const browniePrices = {
+            "Chocolate Brownies": 110,
+            "Fudge Walnut Brownies": 130,
+            "Nutella Brownies": 130
+        };
+
+        /* ================= TOTAL CALCULATION ================= */
+
+        function calculateTotal() {
+
+            let cake = document.getElementById("cakeSelect").value;
+            let brownie = document.getElementById("brownieSelect").value;
+
+            let cakeQty = parseInt(document.getElementById("cakeQty").value) || 0;
+            let brownieQty = parseInt(document.getElementById("brownieQty").value) || 0;
+
+            let cakePrice = cakePrices[cake] || 0;
+            let browniePrice = browniePrices[brownie] || 0;
+
+            let total = (cakePrice * cakeQty) + (browniePrice * brownieQty);
+
+            document.getElementById("totalPrice").innerText = total;
+        }
+
+        document.getElementById("cakeSelect").addEventListener("change", calculateTotal);
+        document.getElementById("brownieSelect").addEventListener("change", calculateTotal);
+        document.getElementById("cakeQty").addEventListener("input", calculateTotal);
+        document.getElementById("brownieQty").addEventListener("input", calculateTotal);
+
+        window.onload = calculateTotal;
+    </script>
+
+</body>
+</html>
